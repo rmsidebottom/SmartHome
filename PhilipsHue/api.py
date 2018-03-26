@@ -53,6 +53,8 @@ def runList(keyDict):
     req=""
     opts=['get', 'put', 'post', 'deeper', 'exit']
     subDict = False
+    # TODO: fix this portion of code. does not break on last item.
+    # tested on lights/lightID/name, showed above options not lastlLevel()
     for val in keyDict.values():
         # print("{0}:::{1}".format(type(val), val))
         if type(val) == type({"":""}):
@@ -86,6 +88,7 @@ def runList(keyDict):
                     # TODO
                     break
                 elif act.lower() == 'post':
+                    # TODO:
                     req = ''
                     return req
                 elif act.lower() == 'deeper':
@@ -114,7 +117,12 @@ def main(ip, user):
         menu = json.loads(text)
     print(type(menu))
     req = "/api/"+user+"/"+runList(menu)
-
+    reqList = req.split("/")
+    for w in reqList:
+        if "id" in w.lower():
+            if input("Do you wish to change {}, Y/N? ".format(w))  == 'Y':
+                reqList[reqList.index(w)] = input("Enter the number to replace {}: ".format(w))
+    req = "/".join(reqList)
     print(req)
 
 if __name__ == "__main__":
@@ -125,4 +133,4 @@ if __name__ == "__main__":
     #     ip=sys.argv[1]
     #     user=sys.argv[2]
     #     main(ip, user)
-    main("", "")
+    main("", "username")
