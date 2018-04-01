@@ -5,7 +5,7 @@
     Date: 3/24/17
 """
 
-import sys, json
+import sys, json, requests
 
 # menu = {}
 body = {}
@@ -22,7 +22,7 @@ def lastlLevel(dct):
     while act.lower() != 'exit':
         if act.lower() == 'get':
             req = ''
-            return req
+            return [req, 'GET']
         elif act.lower() == 'put':
             # ask user for data to put
             while True:
@@ -31,11 +31,18 @@ def lastlLevel(dct):
                     {}".format(', '.join(list(dct))))
                 data = input("Enter data: ")
                 if type(data) == type(dct):
-                    body = data
-                    return ''
+                    req = ''
+                    return [req, 'PUT', data]
         elif act.lower() == 'post':
             req = ''
-            break
+            # ask user for data to put
+            while True:
+                print("Enter data in json format to be changed.")
+                print("Values that can be changed are: \
+                    {}".format(', '.join(list(dct))))
+                data = input("Enter data: ")
+                if type(data) == type(dct):
+                    return [req, 'POST', req]
         # they enter something that isn't valid
         else:
             print("Options: get, put, post, exit")
@@ -45,32 +52,27 @@ def lastlLevel(dct):
 """ Function takes a list of options, displays them, accepts input and
     checks the input to ensure it is valid.
     Sets the global variable body to the body of the message if there is a body.
-    Returns the path of the object.
+    Returns the path of the object and request type in a list. If data needs to
+    be sent to the server, it will be returned as the third item in the list.
     Returns '' when exit pressed.
 """
 def runList(keyDict):
     choice=""
     req=""
     opts=['get', 'put', 'post', 'deeper', 'exit']
-    subDict = False
-    # TODO: fix this portion of code. does not break on last item.
-    # tested on lights/lightID/name, showed above options not lastlLevel()
-    for val in keyDict.values():
-        # print("{0}:::{1}".format(type(val), val))
-        if type(val) == type({"":""}):
-            subDict = True
-
-    if not subDict:
-        # call function to get values or set get request, can't traverse any
-        # lower
-        req = lastlLevel(keyDict)
-        return req
 
     while choice.lower() != 'exit':
         # prompt user to pick one of the keys at the nth level
         print("Choose one of the following: {}".format(', '.join(list(keyDict.keys()))))
         choice = input("Enter choice:")
         if choice.lower() in [x.lower() for x in list(keyDict.keys())]:
+            #check if 'choice' has a value (no value means we leave)
+            if type(keyDict[choice]) != type({"":""}):
+                # if the value isn't a dict, we are at the bottom of the
+                # options, can't go deeper.
+                req = lastlLevel(keyDict)
+                return req
+
             #prompt user for actions based on choice
             print("What do you want to do with {0}: {1}".format(choice,
             ', '.join(opts)))
@@ -82,18 +84,31 @@ def runList(keyDict):
             while act.lower() != 'exit':
                 if act.lower() == 'get':
                     req = choice
-                    return req
+                    return [req, 'GET']
                 elif act.lower() == 'put':
                     # ask user for data to put
-                    # TODO
-                    break
+                    # TODO: finish parameters for this
+                    while True:
+                        print("Enter data in json format to be changed.")
+                        print("Values that can be changed are: \
+                            {}".format(', '.join(list(keyDict))))
+                        data = input("Enter data: ")
+                        if type(data) == type(keyDict):
+                            return ['', 'PUT', data]
                 elif act.lower() == 'post':
-                    # TODO:
+                    # TODO: make sure user enters json, finish parameters for this
                     req = ''
-                    return req
+                    while True:
+                        print("Enter data in json format to be changed.")
+                        print("Values that can be changed are: \
+                            {}".format(', '.join(list(keyDict))))
+                        data = input("Enter data: ")
+                        if type(data) == type(keyDict):
+                            return [req, 'POST', data]
                 elif act.lower() == 'deeper':
                     # go one level deeper
-                    req = choice +"/"+ runList(keyDict[choice])
+                    req = runList(keyDict[choice])
+                    req[0] = choice +"/"+ req[0]
                     return req
                 else:
                     print("Please choose an option {1}".format(choice, \
@@ -115,15 +130,29 @@ def main(ip, user):
         encoding='utf-8-sig') as json_file:
         text = json_file.read()
         menu = json.loads(text)
-    print(type(menu))
-    req = "/api/"+user+"/"+runList(menu)
+
+    opts = runList(menu)
+    reqType = opts[1]
+    req = "http://"+ip+"/api/"+user+"/"+opts[0]
     reqList = req.split("/")
     for w in reqList:
         if "id" in w.lower():
             if input("Do you wish to change {}, Y/N? ".format(w))  == 'Y':
                 reqList[reqList.index(w)] = input("Enter the number to replace {}: ".format(w))
     req = "/".join(reqList)
-    print(req)
+    if reqType == "GET":
+        #get request
+        request = requests.get(req)
+        print(request.status_code)
+    elif reqType == 'PUT':
+        # put request
+        request = requests.put(req, data=opts[2])
+        print(request.status_code)
+    elif reqType == 'POST':
+        #post request
+        request = requests.post(req, data=opts[2])
+        print(request.status_code)
+
 
 if __name__ == "__main__":
     # if len(sys.argv) < 3:
@@ -133,4 +162,4 @@ if __name__ == "__main__":
     #     ip=sys.argv[1]
     #     user=sys.argv[2]
     #     main(ip, user)
-    main("", "username")
+    main("127.0.0.1", "username")
