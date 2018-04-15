@@ -5,7 +5,7 @@
     Date: 3/24/17
 """
 
-import sys, json, requests
+import sys, json, requests, pprint
 
 # menu = {}
 body = {}
@@ -21,8 +21,7 @@ def lastlLevel(dct):
 
     while act.lower() != 'exit':
         if act.lower() == 'get':
-            req = ''
-            return [req, 'GET']
+            return ['', 'GET']
         elif act.lower() == 'put':
             # ask user for data to put
             while True:
@@ -30,19 +29,15 @@ def lastlLevel(dct):
                 print("Values that can be changed are: \
                     {}".format(', '.join(list(dct))))
                 data = input("Enter data: ")
-                if type(data) == type(dct):
-                    req = ''
-                    return [req, 'PUT', data]
+                return ['', 'PUT', data]
         elif act.lower() == 'post':
-            req = ''
             # ask user for data to put
             while True:
                 print("Enter data in json format to be changed.")
                 print("Values that can be changed are: \
                     {}".format(', '.join(list(dct))))
                 data = input("Enter data: ")
-                if type(data) == type(dct):
-                    return [req, 'POST', req]
+                return ['', 'POST', req]
         # they enter something that isn't valid
         else:
             print("Options: get, put, post, exit")
@@ -93,8 +88,7 @@ def runList(keyDict):
                         print("Values that can be changed are: \
                             {}".format(', '.join(list(keyDict))))
                         data = input("Enter data: ")
-                        if type(data) == type(keyDict):
-                            return ['', 'PUT', data]
+                        return ['', 'PUT', data]
                 elif act.lower() == 'post':
                     # TODO: make sure user enters json, finish parameters for this
                     req = ''
@@ -133,33 +127,32 @@ def main(ip, user):
 
     opts = runList(menu)
     reqType = opts[1]
-    req = "http://"+ip+"/api/"+user+"/"+opts[0]
-    reqList = req.split("/")
-    for w in reqList:
+    url = "http://"+ip+"/api/"+user+"/"+opts[0]
+    urlList = url.split("/")
+    for w in urlList:
         if "id" in w.lower():
-            if input("Do you wish to change {}, Y/N? ".format(w))  == 'Y':
-                reqList[reqList.index(w)] = input("Enter the number to replace {}: ".format(w))
-    req = "/".join(reqList)
+            if input("Do you wish to change {}, Y/N? ".format(w)).lower()  == 'y':
+                urlList[urlList.index(w)] = input("Enter the number to replace {}: ".format(w))
+    url = "/".join(urlList)
     if reqType == "GET":
         #get request
-        request = requests.get(req)
-        print(request.status_code)
+        response = requests.get(url)
+        pprint.PrettyPrinter(indent=4).pprint(response.json())
     elif reqType == 'PUT':
-        # put request
-        request = requests.put(req, data=opts[2])
-        print(request.status_code)
+        response = requests.put(url, data=opts[2])
+        pprint.PrettyPrinter(indent=4).pprint(response.json())
     elif reqType == 'POST':
         #post request
-        request = requests.post(req, data=opts[2])
-        print(request.status_code)
+        response = requests.post(url, data=opts[2])
+        pprint.PrettyPrinter(indent=4).pprint(response.json())
 
 
 if __name__ == "__main__":
-    # if len(sys.argv) < 3:
-    #     print("Missing arguments, ./prog.py addr username")
-    #     exit()
-    # else:
-    #     ip=sys.argv[1]
-    #     user=sys.argv[2]
-    #     main(ip, user)
-    main("127.0.0.1", "username")
+    if len(sys.argv) < 3:
+        print("Missing arguments, ./prog.py addr username")
+        exit()
+    else:
+        ip=sys.argv[1]
+        user=sys.argv[2]
+        main(ip, user)
+    # main("127.0.0.1", "username")
