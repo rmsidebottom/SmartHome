@@ -1,0 +1,161 @@
+{
+    "lights": {
+        "lightID": {
+            "state": {
+                "on": "",
+                "bri": "",
+                "alert": "",
+                "mode": "",
+                "reachable": ""
+            },
+            "swupdate": {
+                "state": "",
+                "lastinstall": ""
+            },
+            "type": "",
+            "name": "",
+            "modelid": "",
+            "manufacturername": "",
+            "capabilities": {
+                "certified": "",
+                "streaming": {
+                    "renderer": "",
+                    "proxy": ""
+                }
+            },
+            "uniqueid": "",
+            "swversion": "",
+            "swconfigid": "",
+            "productid": ""
+        }
+    },
+    "groups": {
+        "groupID": {
+            "name": "",
+            "lights": "",
+            "type": "",
+            "state": {
+                "all_on": "",
+                "any_on": ""
+            },
+            "recycle": "",
+            "class": "",
+            "action": {
+                "on": "",
+                "bri": "",
+                "alert": ""
+            }
+        }
+    },
+	"config": {
+		"name": "",
+		"zigbeechannel": "",
+		"bridgeid": "",
+		"mac": "",
+		"dhcp": "",
+		"ipaddress": "",
+		"netmask": "",
+		"gateway": "",
+		"proxyaddress": "",
+		"proxyport": "",
+		"UTC": "",
+		"localtime": "",
+		"timezone": "",
+		"modelid": "",
+		"datastoreversion": "",
+		"swversion": "",
+		"apiversion": "",
+		"swupdate": {
+			"updatestate": "",
+			"checkforupdate": "",
+			"devicetypes": {
+				"bridge": "",
+				"lights": "",
+				"sensors": ""
+			},
+			"url": "",
+			"text": "",
+			"notify": ""
+		},
+		"swupdate2": {
+			"checkforupdate": "",
+			"lastchange": "",
+			"bridge": {
+				"state": "",
+				"lastinstall": ""
+			},
+			"state": "",
+			"autoinstall": {
+				"updatetime": "",
+				"on": ""
+			}
+		},
+		"linkbutton": "",
+		"portalservices": "",
+		"portalconnection": "",
+		"portalstate": {
+			"signedon": "",
+			"incoming": "",
+			"outgoing": "",
+			"communication": ""
+		},
+		"internetservices": {
+			"internet": "",
+			"remoteaccess": "",
+			"time": "",
+			"swupdate": ""
+		},
+		"factorynew": "",
+		"replacesbridgeid": "",
+		"backup": {
+			"status": "",
+			"errorcode": ""
+		},
+		"starterkitid": "",
+		"whitelist": {
+			"deviceID": {
+				"last use date": "",
+				"create date": "",
+				"name": ""
+			}
+		}
+	},
+	"schedules": "",
+	"scenes": {
+		"sceneID": {
+			"name": "",
+			"lights": "",
+			"owner": "",
+			"recycle": "",
+			"locked": "",
+			"appdata": {
+				"version": "",
+				"data": ""
+			},
+			"picture": "",
+			"lastupdated": "",
+			"version": ""
+		}
+	},
+	"rules": "",
+	"sensors": {
+		"1": {
+			"state": {
+				"daylight": "",
+				"lastupdated": ""
+			},
+			"config": {
+				"on": "",
+				"configured": "",
+				"sunriseoffset": "",
+				"sunsetoffset": ""
+			},
+			"name": "",
+			"type": "",
+			"modelid": "",
+			"manufacturername": "",
+			"swversion": ""
+		}
+	},
+	"resourcelinks": ""
+}
